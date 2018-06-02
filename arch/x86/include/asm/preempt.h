@@ -32,6 +32,9 @@ static __always_inline void preempt_count_set(int pc)
  */
 #define init_task_preempt_count(p) do { } while (0)
 
+#define task_preempt_count(p) \
+	(task_thread_info(p)->saved_preempt_count & ~PREEMPT_NEED_RESCHED)
+
 #define init_idle_preempt_count(p, cpu) do { \
 	per_cpu(__preempt_count, (cpu)) = PREEMPT_ENABLED; \
 } while (0)
