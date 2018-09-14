@@ -5393,7 +5393,6 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p, int sync)
 	return 1;
 }
 
-#ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
 static unsigned int capacity_margin = 1280; /* ~20% margin */
 static inline unsigned long boosted_task_util(struct task_struct *task);
 
@@ -5415,7 +5414,6 @@ static inline bool task_fits_spare(struct task_struct *p, int cpu)
 {
 	return __task_fits(p, cpu, cpu_util(cpu));
 }
-#endif
 
 /*
  * find_idlest_group finds and returns the least busy CPU group within the
@@ -5429,10 +5427,8 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p,
 	unsigned long min_load = ULONG_MAX, this_load = 0;
 	int load_idx = sd->forkexec_idx;
 	int imbalance = 100 + (sd->imbalance_pct-100)/2;
-#ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
 	struct sched_group *fit_group = NULL;
 	unsigned long fit_capacity = ULONG_MAX;
-#endif
 
 	if (sd_flag & SD_BALANCE_WAKE)
 		load_idx = sd->wake_idx;
@@ -5461,7 +5457,7 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p,
 				load = target_load(i, load_idx);
 
 			avg_load += load;
-#ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
+
 			/*
 			 * Look for most energy-efficient group that can fit
 			 * that can fit the task.
@@ -5470,7 +5466,6 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p,
 				fit_capacity = capacity_of(i);
 				fit_group = group;
 			}
-#endif
 		}
 
 		/* Adjust by relative CPU capacity of the group */
@@ -5484,10 +5479,8 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p,
 		}
 	} while (group = group->next, group != sd->groups);
 
-#ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
 	if (fit_group)
 		return fit_group;
-#endif
 
 	if (!idlest || 100*this_load < imbalance*min_load)
 		return NULL;
@@ -5509,11 +5502,7 @@ find_idlest_cpu(struct sched_group *group, struct task_struct *p, int this_cpu)
 
 	/* Traverse only the allowed CPUs */
 	for_each_cpu_and(i, sched_group_cpus(group), tsk_cpus_allowed(p)) {
-#ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
 		if (task_fits_spare(p, i)) {
-#else
-		if (idle_cpu(i)) {
-#endif
 			struct rq *rq = cpu_rq(i);
 			struct cpuidle_state *idle = idle_get_state(rq);
 			if (idle && idle->exit_latency < min_exit_latency) {
@@ -5525,12 +5514,8 @@ find_idlest_cpu(struct sched_group *group, struct task_struct *p, int this_cpu)
 				min_exit_latency = idle->exit_latency;
 				latest_idle_timestamp = rq->idle_stamp;
 				shallowest_idle_cpu = i;
-#ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
 			} else if (idle_cpu(i) &&
 				   (!idle || idle->exit_latency == min_exit_latency) &&
-#else
-			} else if ((!idle || idle->exit_latency == min_exit_latency) &&
-#endif
 				   rq->idle_stamp > latest_idle_timestamp) {
 				/*
 				 * If equal or no active idle state, then
@@ -5539,7 +5524,6 @@ find_idlest_cpu(struct sched_group *group, struct task_struct *p, int this_cpu)
 				 */
 				latest_idle_timestamp = rq->idle_stamp;
 				shallowest_idle_cpu = i;
-#ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
 			} else if (shallowest_idle_cpu == -1) {
 				/*
 				 * If we haven't found an idle CPU yet
@@ -5547,7 +5531,6 @@ find_idlest_cpu(struct sched_group *group, struct task_struct *p, int this_cpu)
 				 * fallback.
 				 */
 				shallowest_idle_cpu = i;
-#endif
 			}
 		} else if (shallowest_idle_cpu == -1) {
 			load = weighted_cpuload(i);
@@ -6824,12 +6807,8 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_f
 		sd_flag |= SD_BALANCE_WAKE;
 
 	if (sd_flag & SD_BALANCE_WAKE)
-#ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
 		want_affine = !wake_wide(p) && task_fits_max(p, cpu) &&
 			      cpumask_test_cpu(cpu, tsk_cpus_allowed(p));
-#else
-		want_affine = !wake_wide(p) && cpumask_test_cpu(cpu, tsk_cpus_allowed(p));
-#endif
 
 	rcu_read_lock();
 	for_each_domain(cpu, tmp) {
