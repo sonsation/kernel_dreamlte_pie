@@ -203,7 +203,7 @@ static int do_cpu_hotplug(bool fast_hotplug)
 	if (fast_hotplug) {
 		struct cpumask temp;
 
-		cpumask_and(&temp, &hmp_fast_cpu_mask, cpu_online_mask);
+		cpumask_and(&temp, cpu_coregroup_mask(4), cpu_online_mask);
 		cpumask_andnot(&temp, &temp, &disable_cpus);
 		if (cpumask_empty(&temp)) {
 			mutex_unlock(&cpu_hotplug.lock);

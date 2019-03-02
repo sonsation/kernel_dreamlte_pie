@@ -265,7 +265,7 @@ static int pmu_cpus_notifier(struct notifier_block *nb,
 
 	switch (event) {
 	case CPUS_DOWN_COMPLETE:
-		cpumask_andnot(&mask, &hmp_fast_cpu_mask, (struct cpumask *)data);
+		cpumask_andnot(&mask, cpu_coregroup_mask(4), (struct cpumask *)data);
 
 		/*
 		 * Wait for core power down

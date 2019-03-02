@@ -38,7 +38,7 @@ void schedtune_dequeue_task(struct task_struct *p, int cpu);
 
 int schedtune_normalize_energy(int energy);
 int schedtune_accept_deltas(int nrg_delta, int cap_delta,
-                           struct task_struct *task);
+			    struct task_struct *task);
 
 #else /* CONFIG_SCHED_TUNE */
 
@@ -53,7 +53,3 @@ int schedtune_accept_deltas(int nrg_delta, int cap_delta,
 #define schedtune_accept_deltas(nrg_delta, cap_delta, task) nrg_delta
 
 #endif /* CONFIG_SCHED_TUNE */
-
-#ifdef CONFIG_FREQVAR_SCHEDTUNE
-int freqvar_tune_exit(void);
-#endif 

@@ -24,9 +24,6 @@
  */
 static struct lock_class_key irq_desc_lock_class;
 
-#ifdef CONFIG_SCHED_HMP
-extern struct cpumask hmp_slow_cpu_mask;
-#endif
 #if defined(CONFIG_SMP)
 static void __init init_irq_default_affinity(void)
 {

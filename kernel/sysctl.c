@@ -448,15 +448,6 @@ static struct ctl_table kern_table[] = {
 		.mode		= 0644,
 		.proc_handler	= sched_rr_handler,
 	},
-#ifdef CONFIG_SCHED_USE_FLUID_RT
-	{
-		.procname	= "sysctl_sched_restrict_cluster_spill",
-		.data		= &sysctl_sched_restrict_cluster_spill,
-		.maxlen		= sizeof(unsigned int),
-		.mode		= 0644,
-		.proc_handler	= proc_dointvec,
-	},
-#endif	
 #ifdef CONFIG_SCHED_AUTOGROUP
 	{
 		.procname	= "sched_autogroup_enabled",

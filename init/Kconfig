@@ -412,6 +412,18 @@ config SCHED_WALT
 	  used to guide task placement as well as task frequency requirements
 	  for cpufreq governors.
 
+config SCHED_WALT_DEFAULT
+	bool "Use window based load tracking for cpu and task util"
+	depends on SCHED_WALT
+	default N
+	help
+	  If Y, use WALT signals for cpu and task utilization in the
+	  scheduler. This guides task placement and capacity selection for
+	  cpufreq governors.
+	  If N, use the PELT signals for cpu and task utilization.
+
+	  If in doubt, say N here.
+
 config BSD_PROCESS_ACCT
 	bool "BSD Process Accounting"
 	depends on MULTIUSER
@@ -1320,6 +1332,16 @@ config SCHED_USE_FLUID_RT
 		to preempt the higher one based on weighted load.
 
 		Say N if unsure.
+
+config DEFAULT_USE_ENERGY_AWARE
+	bool "Default to enabling the Energy Aware Scheduler feature"
+	default n
+	help
+	  This option defaults the ENERGY_AWARE scheduling feature to true,
+	  as without SCHED_DEBUG set this feature can't be enabled or disabled
+	  via sysctl.
+
+	  Say N if unsure.
 
 config SYSFS_DEPRECATED
 	bool "Enable deprecated sysfs features to support old userspace tools"

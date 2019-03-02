@@ -312,7 +312,6 @@ fail_enc_init:
 	return 0;
 }
 
-extern int set_hmp_family_boost(int enable);
 /* Open an MFC node */
 static int s5p_mfc_open(struct file *file)
 {
@@ -347,9 +346,7 @@ static int s5p_mfc_open(struct file *file)
 		mfc_debug(1, "encoder count: %d\n", dev->num_enc);
 		if (dev->num_enc == 1) {
 			disable_priv_cpuidle();
-			mfc_debug(1, "call cpuidle_pause()\n");
-			set_hmp_family_boost(1);
-			mfc_debug(1, "call set_hmp_family_boost(1)\n");
+			mfc_debug(1, "call cpuidle_pause()\n");;
 		}
 	}
 
@@ -594,8 +591,6 @@ err_ctx_alloc:
 		dev->num_enc--;
 		mfc_debug(1, "encoder count: %c\n", dev->num_enc);
 		if (dev->num_enc == 0) {
-			set_hmp_family_boost(0);
-			mfc_debug(1, "call set_hmp_family_boost(0)\n");
 			enable_priv_cpuidle();
 			mfc_debug(1, "call cpuidle_resume()\n");
 		}
@@ -693,8 +688,6 @@ static int s5p_mfc_release(struct file *file)
 		dev->num_enc--;
 		mfc_debug(1, "encoder count: %c\n", dev->num_enc);
 		if (dev->num_enc == 0) {
-			set_hmp_family_boost(0);
-			mfc_debug(1, "call set_hmp_family_boost(0)\n");
 			enable_priv_cpuidle();
 			mfc_debug(1, "call cpuidle_resume()\n");
 		}

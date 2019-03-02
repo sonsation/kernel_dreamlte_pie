@@ -235,25 +235,35 @@ static inline bool sugov_cpu_is_busy(struct sugov_cpu *sg_cpu) { return false; }
 
 extern unsigned int sched_rt_remove_ratio_for_freq;
 
+static inline bool use_pelt(void)
+{
+#ifdef CONFIG_SCHED_WALT
+	return (!sysctl_sched_use_walt_cpu_util || walt_disabled);
+#else
+	return true;
+#endif
+}
+
 static void sugov_get_util(unsigned long *util, unsigned long *max, u64 time)
 {
 	int cpu = smp_processor_id();
-	unsigned long max_cap, rt_avg;
+	struct rq *rq = cpu_rq(cpu);
+	unsigned long max_cap, rt;
+	s64 delta;
 
 	max_cap = arch_scale_cpu_capacity(NULL, cpu);
 
-	*util = boosted_cpu_util(cpu);
-	if (sched_feat(UTIL_EST)) {
-		*util = max_t(unsigned long, *util,
-			     READ_ONCE(cpu_rq(cpu)->cfs.avg.util_est.enqueued));
-	}
+	sched_avg_update(rq);
+	delta = time - rq->age_stamp;
+	if (unlikely(delta < 0))
+		delta = 0;
+	rt = div64_u64(rq->rt_avg, sched_avg_period() + delta);
+	rt = (rt * max_cap) >> SCHED_CAPACITY_SHIFT;
 
-	if (sched_rt_remove_ratio_for_freq) {
-		rt_avg = cpu_rq(cpu)->rt.avg.util_avg;
-		*util -= ((rt_avg * sched_rt_remove_ratio_for_freq) / 100);
-	}
-	
-	*util = min(*util, max_cap);	
+	*util = boosted_cpu_util(cpu);
+	if (likely(use_pelt()))
+		*util = min((*util + rt), max_cap);
+
 	*max = max_cap;
 }
 

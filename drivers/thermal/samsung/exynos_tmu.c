@@ -1519,7 +1519,6 @@ static int exynos_isp_cooling_register(struct exynos_tmu_data *data)
 static int exynos_isp_cooling_register(struct exynos_tmu_data *data) {return 0;}
 #endif
 
-extern struct cpumask hmp_fast_cpu_mask;
 static int exynos_tmu_cpus_notifier(struct notifier_block *nb,
 				    unsigned long event, void *data)
 {
@@ -1532,7 +1531,7 @@ static int exynos_tmu_cpus_notifier(struct notifier_block *nb,
 
 
 	cpumask_copy(&mask, data);
-	cpumask_and(&mask, &mask, &hmp_fast_cpu_mask);
+	cpumask_and(&mask, &mask, cpu_coregroup_mask(4));
 	big_cpu_cnt = cpumask_weight(&mask);
 
 	cpumask_copy(&cpufreq_device->target_cpus, &mask);

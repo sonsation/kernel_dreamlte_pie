@@ -459,7 +459,7 @@ static int _cpu_down(unsigned int cpu, int tasks_frozen)
 	/* This actually kills the CPU. */
 	__cpu_die(cpu);
 
-	if (cpumask_test_cpu(cpu, &hmp_fast_cpu_mask))
+	if (cpumask_test_cpu(cpu, cpu_coregroup_mask(4)))
 		cpus_notify_nofail(CPUS_DOWN_COMPLETE, (void *)cpu_online_mask);
 
 	/* CPU is completely dead: tell everyone.  Too late to complain. */
@@ -687,7 +687,7 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen)
 		goto out;
 	}
 
-	if (cpumask_test_cpu(cpu, &hmp_fast_cpu_mask)) {
+	if (cpumask_test_cpu(cpu, cpu_coregroup_mask(4))) {
 		cpumask_or(&dest_cpus, cpumask_of(cpu), cpu_online_mask);
 
 		ret = cpus_notify(CPUS_UP_PREPARE, (void *)&dest_cpus);

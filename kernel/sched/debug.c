@@ -155,7 +155,7 @@ static void print_rq(struct seq_file *m, struct rq *rq, int rq_cpu)
 
 	rcu_read_lock();
 	for_each_process_thread(g, p) {
-		if (!p->on_rq || task_cpu(p) != rq_cpu)
+		if (task_cpu(p) != rq_cpu)
 			continue;
 
 		print_task(m, rq, p);
@@ -211,12 +211,6 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 			cfs_rq->runnable_load_avg);
 	SEQ_printf(m, "  .%-30s: %lu\n", "util_avg",
 			cfs_rq->avg.util_avg);
-	SEQ_printf(m, "  .%-30s: %u\n", "util_est_enqueued",
-			cfs_rq->avg.util_est.enqueued);
-#ifdef CONFIG_SCHED_HMP
-	SEQ_printf(m, "  .%-30s: %llu\n", "hmp_load_avg",
-			cfs_rq->avg.hmp_load_avg);
-#endif
 	SEQ_printf(m, "  .%-30s: %ld\n", "removed_load_avg",
 			atomic_long_read(&cfs_rq->removed_load_avg));
 	SEQ_printf(m, "  .%-30s: %ld\n", "removed_util_avg",
@@ -664,11 +658,6 @@ void proc_sched_show_task(struct task_struct *p, struct seq_file *m)
 	P(se.avg.load_avg);
 	P(se.avg.util_avg);
 	P(se.avg.last_update_time);
-	P(se.avg.util_est.ewma);
-	P(se.avg.util_est.enqueued);
-#ifdef CONFIG_SCHED_HMP
-	P(se.avg.hmp_load_avg);
-#endif
 #endif
 	P(policy);
 	P(prio);

@@ -159,21 +159,6 @@
 		#address-cells = <2>;
 		#size-cells = <0>;
 
-		hmp {
-			up_threshold = <524>;
-			down_threshold = <214>;
-			semiboost_up_threshold = <254>;
-			semiboost_down_threshold = <163>;
-			bootboost-duration-us = <40000000>;
-			down_compensation_timeout = <30>;               /* ms */
-			down_compensation_high_freq = <1248000>;        /* min qos lock for little cpu */
-			down_compensation_mid_freq = <1053000>;          /* min qos lock for little cpu */
-			down_compensation_low_freq = <832000>;          /* min qos lock for little cpu */
-			hmp_up_compst_ratio = <512>;
-			hmp_down_compst_ratio = <2048>;
-			little-id = <1>;
-		};
-
 		auto_cpu_mapping {
 			enabled = <1>;
 		};
@@ -3423,7 +3408,6 @@
 			type = "normal";
 			pm_qos_lit = <715000 715000 0>; /* SUHQA UHQA NORMAL */
 			pm_qos_big = <1170000 1170000 0>; /* SUHQA UHQA NORMAL */
-			pm_qos_hmp = <1 1 0>; /* SUHQA UHQA NORMAL */
 		};
 
 		abox_rdma_1: abox_rdma@0x13E51100 {
@@ -3434,7 +3418,6 @@
 			type = "normal";
 			pm_qos_lit = <715000 715000 0>; /* SUHQA UHQA NORMAL */
 			pm_qos_big = <1170000 1170000 0>; /* SUHQA UHQA NORMAL */
-			pm_qos_hmp = <1 1 0>; /* SUHQA UHQA NORMAL */
 		};
 
 		abox_rdma_2: abox_rdma@0x13E51200 {
@@ -3445,7 +3428,6 @@
 			type = "normal";
 			pm_qos_lit = <715000 715000 0>; /* SUHQA UHQA NORMAL */
 			pm_qos_big = <1170000 1170000 0>; /* SUHQA UHQA NORMAL */
-			pm_qos_hmp = <1 1 0>; /* SUHQA UHQA NORMAL */
 		};
 
 		abox_rdma_3: abox_rdma@0x13E51300 {
@@ -4866,7 +4848,6 @@
 			/* Frequency table */
 			/* for level	:	1_Head */
 			input_booster,cpu_freqs = <1066000>;
-			input_booster,hmp_boost = <1>;
 			input_booster,kfc_freqs = <0>;
 			input_booster,mif_freqs = <0>;
 			input_booster,int_freqs = <0>;
@@ -4885,7 +4866,6 @@
 			/* Frequency table */
 			/* for level	:	1_Head */
 			input_booster,cpu_freqs = <1066000>;
-			input_booster,hmp_boost = <1>;
 			input_booster,kfc_freqs = <0>;
 			input_booster,mif_freqs = <0>;
 			input_booster,int_freqs = <0>;
@@ -4904,7 +4884,6 @@
 			/* Frequency table */
 			/* for level	:	1_Head, 2_Head, 2_Tail */
 			input_booster,cpu_freqs = <1066000 1066000 858000>;
-			input_booster,hmp_boost = <1 1 1>;
 			input_booster,kfc_freqs = <832000 832000 832000>;
 			input_booster,mif_freqs = <0 0 0>;
 			input_booster,int_freqs = <0 0 0>;
@@ -4923,7 +4902,6 @@
 			/* Frequency table */
 			/* for level	:	1_Head 2_Tail*/
 			input_booster,cpu_freqs = <1066000 858000>;
-			input_booster,hmp_boost = <1 1>;
 			input_booster,kfc_freqs = <832000 832000>;
 			input_booster,mif_freqs = <0 0>;
 			input_booster,int_freqs = <0 0>;
@@ -4942,7 +4920,6 @@
 			/* Frequency table */
 			/* for level	:	1_Head 2_Tail*/
 			input_booster,cpu_freqs = <1066000 1066000>;
-			input_booster,hmp_boost = <1 1>;
 			input_booster,kfc_freqs = <832000 832000>;
 			input_booster,mif_freqs = <0 0>;
 			input_booster,int_freqs = <0 0>;
@@ -4961,7 +4938,6 @@
 			/* Frequency table */
 			/* for level	:	1_Head 2_Tail*/
 			input_booster,cpu_freqs = <1066000 858000>;
-			input_booster,hmp_boost = <1 1>;
 			input_booster,kfc_freqs = <832000 832000>;
 			input_booster,mif_freqs = <0 0>;
 			input_booster,int_freqs = <0 0>;
@@ -4980,7 +4956,6 @@
 			/* Frequency table */
 			/* for level	:	1_Head 2_Tail*/
 			input_booster,cpu_freqs = <1066000 0>;
-			input_booster,hmp_boost = <1 0>;
 			input_booster,kfc_freqs = <832000 0>;
 			input_booster,mif_freqs = <0 0>;
 			input_booster,int_freqs = <0 0>;
@@ -4999,7 +4974,6 @@
 			/* Frequency table */
 			/* for level	:	1_Head 2_Tail*/
 			input_booster,cpu_freqs = <1066000 858000>;
-			input_booster,hmp_boost = <1 1>;
 			input_booster,kfc_freqs = <832000 832000>;
 			input_booster,mif_freqs = <0 0>;
 			input_booster,int_freqs = <0 0>;
@@ -5018,7 +4992,6 @@
 			/* Frequency table */
 			/* for level	:	1_Head 2_Tail*/
 			input_booster,cpu_freqs = <1469000 858000>;
-			input_booster,hmp_boost = <1 1>;
 			input_booster,kfc_freqs = <832000 832000>;
 			input_booster,bimc_freqs = <0 0>;
 
@@ -5035,7 +5008,6 @@
 			/* Frequency table */
 			/* for level	:	1_Head */
 			input_booster,cpu_freqs = <1469000>;
-			input_booster,hmp_boost = <1>;
 			input_booster,kfc_freqs = <0>;
 			input_booster,mif_freqs = <0>;
 			input_booster,int_freqs = <0>;
