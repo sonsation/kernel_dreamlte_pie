@@ -1964,21 +1964,26 @@ static unsigned long capacity_orig_of(int cpu)
  * capacity_orig) as it useful for predicting the capacity required after task
  * migrations (scheduler-driven DVFS).
  */
-static inline unsigned long cpu_util(int cpu)
+static inline unsigned long __cpu_util(int cpu, int delta)
 {
 	unsigned long util;
 	unsigned long capacity = capacity_orig_of(cpu);
 	struct cfs_rq *cfs_rq = &cpu_rq(cpu)->cfs;
 
-	util = cfs_rq->avg.util_avg;
+	util = cfs_rq->avg.util_avg + cpu_rq(cpu)->rt.avg.util_avg;
 	
 	if (sched_feat(UTIL_EST))
 		util = max_t(unsigned long, util, READ_ONCE(cfs_rq->avg.util_est.enqueued));
+
+	delta += util;
+	if (delta < 0)
+		return 0;
 	
-	util += cpu_rq(cpu)->rt.avg.util_avg;
-	return (util >= capacity) ? capacity : util;
+	return (delta >= capacity) ? capacity : delta;
 }
 
-unsigned long
-boosted_cpu_util(int cpu);
+static inline unsigned long cpu_util(int cpu)
+{
+	return __cpu_util(cpu, 0);
+}
 #endif
