@@ -131,3 +131,4 @@ arch/arm64/kernel/vdso/vdso.so
 security/defex_lsm/defex_packed_rules.inc
 security/defex_lsm/defex_rules_reduced.c
 security/defex_lsm/pack_rules
+include/config

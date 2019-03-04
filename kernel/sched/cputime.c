@@ -953,6 +953,14 @@ void task_cputime(struct task_struct *t, cputime_t *utime, cputime_t *stime)
 		return;
 	}
 
+	if (!context_tracking_is_enabled()) {
+		if (utime)
+			*utime = t->utime;
+		if (stime)
+			*stime = t->stime;
+		return;
+	}
+
 	fetch_task_cputime(t, utime, stime, &t->utime,
 			   &t->stime, &udelta, &sdelta);
 	if (utime)
@@ -967,6 +975,14 @@ void task_cputime_scaled(struct task_struct *t,
 	cputime_t udelta, sdelta;
 
 	if (!vtime_accounting_enabled()) {
+		if (utimescaled)
+			*utimescaled = t->utimescaled;
+		if (stimescaled)
+			*stimescaled = t->stimescaled;
+		return;
+	}
+
+	if (!context_tracking_is_enabled()) {
 		if (utimescaled)
 			*utimescaled = t->utimescaled;
 		if (stimescaled)
